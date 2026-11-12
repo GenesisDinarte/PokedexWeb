@@ -1,0 +1,67 @@
+@model BusquedaFormulario
+
+@{
+    ViewData["Title"] = "Buscar Pokémon";
+}
+
+<section class="search-page">
+
+    <div class="search-header">
+        <span class="poke-eyebrow">ENCUENTRA TU PRÓXIMO COMPAÑERO</span>
+        <h1>¿Qué Pokémon estás buscando?</h1>
+        <p>
+            Busca por nombre, número de Pokédex o especie
+            y descubre toda la información disponible.
+        </p>
+    </div>
+
+    <div class="search-panel">
+        <div class="search-icon">⌕</div>
+
+        <h2>Buscador Pokémon</h2>
+        <p class="search-description">
+            Escribe el nombre o número del Pokémon que deseas encontrar.
+        </p>
+
+        <form asp-action="Buscar" method="post">
+            <div class="mb-3">
+                <label asp-for="Termino" class="form-label">
+                    Nombre o número del Pokémon
+                </label>
+
+                <input asp-for="Termino"
+                       class="form-control search-input"
+                       placeholder="Ej. Pikachu, 25, Charizard..."
+                       autofocus />
+
+                <span asp-validation-for="Termino" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn search-submit">
+                Buscar Pokémon <span>→</span>
+            </button>
+        </form>
+
+        <div class="search-examples">
+            <span>PRUEBA BUSCANDO:</span>
+            <span>Pikachu</span>
+            <span>25</span>
+            <span>Charizard</span>
+        </div>
+    </div>
+
+    <div class="search-tip">
+        <span>✦</span>
+        <p>
+            Consejo: puedes utilizar el número de la Pokédex
+            o el nombre en inglés del Pokémon.
+        </p>
+    </div>
+
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

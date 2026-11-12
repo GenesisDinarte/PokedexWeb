@@ -1,0 +1,169 @@
+@using PokedexWeb.BusinessWorkflow
+@model List<MiembroEquipo>
+
+@{
+    ViewData["Title"] = "Mi equipo";
+    var poderTotal = Model.Sum(m => m.TotalEstadisticas);
+    var espaciosLibres = EquipoFlujo.MaximoEquipo - Model.Count;
+}
+
+<section class="team-page">
+
+    <div class="team-hero">
+        <div class="team-hero-content">
+            <span class="poke-eyebrow">CENTRO DE ENTRENAMIENTO</span>
+            <h1>Mi equipo <span>Pokémon</span></h1>
+            <p>Administra tus compañeros, personaliza sus apodos y prepara tu equipo para la aventura.</p>
+        </div>
+
+        <div class="team-hero-symbol">♜</div>
+    </div>
+
+    <div class="team-summary">
+        <div class="team-summary-card">
+            <span class="team-summary-icon">◈</span>
+            <div>
+                <span>INTEGRANTES</span>
+                <strong>@Model.Count / @EquipoFlujo.MaximoEquipo</strong>
+            </div>
+        </div>
+
+        <div class="team-summary-card">
+            <span class="team-summary-icon">⚡</span>
+            <div>
+                <span>PODER TOTAL</span>
+                <strong>@poderTotal.ToString("N0")</strong>
+            </div>
+        </div>
+
+        <div class="team-summary-card">
+            <span class="team-summary-icon">＋</span>
+            <div>
+                <span>ESPACIOS LIBRES</span>
+                <strong>@espaciosLibres</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="team-section-heading">
+        <div>
+            <span class="poke-eyebrow">TU FORMACIÓN</span>
+            <h2>Plantilla Pokémon</h2>
+            <p>Tu equipo puede tener hasta seis integrantes.</p>
+        </div>
+
+        <span class="team-count-label">@Model.Count integrantes</span>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="team-empty">
+            <span class="team-empty-icon">◓</span>
+            <h3>¡Tu aventura está por comenzar!</h3>
+            <p>Aún no tienes Pokémon en tu equipo. Explora la Pokédex y elige a tus primeros compañeros.</p>
+            <a asp-controller="Pokedex" asp-action="Index" class="btn team-empty-button">
+                Explorar Pokédex →
+            </a>
+        </div>
+    }
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+
+        @foreach (var miembro in Model)
+        {
+            <div class="col">
+                <article class="team-member-card">
+
+                    <div class="team-member-top">
+                        <span>INTEGRANTE</span>
+                        <span class="team-member-power">
+                            ⚡ @miembro.TotalEstadisticas
+                        </span>
+                    </div>
+
+                    <div class="team-member-image">
+                        <div class="team-member-glow"></div>
+                        <img src="@miembro.Imagen"
+                             alt="@miembro.Nombre"
+                             loading="lazy" />
+                    </div>
+
+                    <div class="team-member-info">
+                        <h3 class="text-capitalize">
+                            @(miembro.Apodo ?? miembro.Nombre)
+                        </h3>
+
+                        @if (miembro.Apodo != null)
+                        {
+                            <span class="team-original-name text-capitalize">
+                                @miembro.Nombre
+                            </span>
+                        }
+
+                        <div class="team-member-types">
+                            @foreach (var tipo in miembro.Tipos)
+                            {
+                                <partial name="_TipoBadge" model="tipo" />
+                            }
+                        </div>
+
+                        <div class="team-member-stat">
+                            <span>PODER INDIVIDUAL</span>
+                            <strong>@miembro.TotalEstadisticas</strong>
+                        </div>
+
+                        <form asp-action="CambiarApodo"
+                              method="post"
+                              class="team-nickname-form">
+
+                            <input type="hidden" name="id" value="@miembro.Id" />
+
+                            <input type="text"
+                                   name="apodo"
+                                   value="@miembro.Apodo"
+                                   class="form-control"
+                                   placeholder="Cambiar apodo"
+                                   maxlength="20" />
+
+                            <button type="submit" class="btn team-save-button">
+                                Guardar
+                            </button>
+                        </form>
+
+                        <form asp-action="Eliminar"
+                              method="post"
+                              onsubmit="return confirm('¿Liberar a @miembro.Nombre?')">
+
+                            <input type="hidden" name="id" value="@miembro.Id" />
+
+                            <button type="submit" class="btn team-release-button">
+                                Liberar Pokémon
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        }
+
+        @while (espaciosLibres > 0)
+        {
+            <div class="col">
+                <div class="team-empty-slot">
+                    <span class="team-slot-symbol">＋</span>
+                    <strong>Espacio disponible</strong>
+                    <span>Tu próximo compañero te espera</span>
+
+                    <a asp-controller="Pokedex"
+                       asp-action="Index"
+                       class="team-slot-link">
+                        Buscar Pokémon →
+                    </a>
+                </div>
+            </div>
+
+            espaciosLibres--;
+        }
+
+    </div>
+
+</section>

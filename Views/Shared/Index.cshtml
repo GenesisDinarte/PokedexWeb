@@ -1,0 +1,15 @@
+﻿@*
+    Vista paricial reutilizable una tarjeta de pokemon
+*@
+@model PokemonResumen
+
+<div class="col">
+    <a asp-controller="Pokemon" asp-action="Detalle" asp-route-id="@Model.Nombre"
+         class="card h-100 text-decoration-none text-dark poke-card">
+        <img src="@Model.Imagen" class="card-img-top p-3" alt="@Model.Nombre" loading="lazy"/>
+        <div class="card-body text-center pt-0">
+            <small class="text-muted">#@Model.Id.ToString("D4")</small>
+            <h6 class="card-title text-capitalize mb-0">@Model.Nombre</h6>
+        </div>>
+    </a>
+</div>

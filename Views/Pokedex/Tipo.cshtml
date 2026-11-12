@@ -1,0 +1,119 @@
+@model List<PokemonResumen>
+
+@{
+    ViewData["Title"] = "Tipos Pokémon";
+
+    string tipoActual = ViewBag.Tipo;
+
+    var tipos = new[] {
+        "fire", "water", "grass", "electric", "psychic", "dragon",
+        "poison", "flying", "normal", "fighting", "ground", "rock",
+        "bug", "ghost", "steel", "ice", "dark", "fairy"
+    };
+
+    var nombresTipos = new Dictionary<string, string>
+    {
+        { "fire", "Fuego" },
+        { "water", "Agua" },
+        { "grass", "Planta" },
+        { "electric", "Eléctrico" },
+        { "psychic", "Psíquico" },
+        { "dragon", "Dragón" },
+        { "poison", "Veneno" },
+        { "flying", "Volador" },
+        { "normal", "Normal" },
+        { "fighting", "Lucha" },
+        { "ground", "Tierra" },
+        { "rock", "Roca" },
+        { "bug", "Bicho" },
+        { "ghost", "Fantasma" },
+        { "steel", "Acero" },
+        { "ice", "Hielo" },
+        { "dark", "Siniestro" },
+        { "fairy", "Hada" }
+    };
+
+    string nombreTipo = nombresTipos.ContainsKey(tipoActual ?? "")
+        ? nombresTipos[tipoActual]
+        : tipoActual;
+}
+
+<section class="types-page">
+
+    <div class="types-hero">
+        <span class="poke-eyebrow">CLASIFICACIÓN ELEMENTAL</span>
+        <h1>Explora por <span>tipo</span></h1>
+        <p>
+            Cada Pokémon posee características únicas.
+            Selecciona un elemento y descubre las especies que pertenecen a él.
+        </p>
+        <div class="types-hero-decoration">✦</div>
+    </div>
+
+    <section class="types-selector">
+        <div class="types-section-heading">
+            <div>
+                <span class="poke-eyebrow">18 ELEMENTOS DISPONIBLES</span>
+                <h2>Selecciona un tipo</h2>
+            </div>
+            <span class="types-counter">@tipos.Length tipos</span>
+        </div>
+
+        <div class="types-grid">
+            @foreach (var tipo in tipos)
+            {
+                bool seleccionado = tipo == tipoActual;
+
+                <a asp-action="Tipo"
+                   asp-route-id="@tipo"
+                   class="type-option type-@tipo @(seleccionado ? "selected" : "")">
+
+                    <span class="type-option-dot"></span>
+                    <span>@nombresTipos[tipo]</span>
+                    @if (seleccionado)
+                    {
+                        <span class="type-check">✓</span>
+                    }
+                </a>
+            }
+        </div>
+    </section>
+
+    <section class="types-results">
+        <div class="types-results-heading">
+            <div>
+                <span class="poke-eyebrow">COLECCIÓN ELEMENTAL</span>
+                <h2>Pokémon de tipo @nombreTipo</h2>
+                <p>Descubre los Pokémon pertenecientes a esta categoría.</p>
+            </div>
+
+            <div class="types-results-count">
+                <strong>@Model.Count</strong>
+                <span>Pokémon</span>
+            </div>
+        </div>
+
+        <div class="types-active-filter">
+            <span>Filtro seleccionado:</span>
+            <partial name="_TipoBadge" model="tipoActual" />
+            <span class="types-showing">Mostrando los primeros @Math.Min(Model.Count, 48)</span>
+        </div>
+
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
+            @foreach (var pokemon in Model.Take(48))
+            {
+                <partial name="_PokemonCard" model="pokemon" />
+            }
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="types-empty">
+                <span>◈</span>
+                <h3>No encontramos Pokémon</h3>
+                <p>Prueba seleccionando otro tipo elemental.</p>
+            </div>
+        }
+    </section>
+
+</section>

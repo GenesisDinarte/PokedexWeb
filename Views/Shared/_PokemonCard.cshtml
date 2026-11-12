@@ -1,0 +1,27 @@
+@model PokemonResumen
+
+<div class="col">
+    <a asp-controller="Pokedex"
+       asp-action="Detalle"
+       asp-route-id="@Model.Nombre"
+       class="poke-card-new text-decoration-none">
+
+        <div class="poke-card-number">
+            <span>POKÉMON</span>
+            <strong>#@Model.Id.ToString("D4")</strong>
+        </div>
+
+        <div class="poke-card-image">
+            <div class="poke-card-glow"></div>
+            <img src="@Model.Imagen"
+                 alt="@Model.Nombre"
+                 loading="lazy" />
+        </div>
+
+        <div class="poke-card-info">
+            <span class="poke-card-label">DESCUBIERTO</span>
+            <h3 class="text-capitalize">@Model.Nombre</h3>
+            <span class="poke-card-link">Ver información <span>↗</span></span>
+        </div>
+    </a>
+</div>

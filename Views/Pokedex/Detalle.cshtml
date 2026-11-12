@@ -1,0 +1,198 @@
+@model Pokemon
+
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+@functions {
+    public string EvaluarEstadistica(int valor)
+    {
+        if (valor >= 120)
+            return "Excelente";
+        else if (valor >= 90)
+            return "Alta";
+        else if (valor >= 60)
+            return "Media";
+        else
+            return "Baja";
+    }
+
+    public string TraducirEstadistica(string nombre) => nombre switch
+    {
+        "hp" => "PS",
+        "attack" => "Ataque",
+        "defense" => "Defensa",
+        "special-attack" => "At. Especial",
+        "special-defense" => "Def. Especial",
+        "speed" => "Velocidad",
+        _ => nombre
+    };
+}
+
+<section class="detail-page">
+
+    <a asp-action="Index" class="detail-back">
+        ← Volver a la Pokédex
+    </a>
+
+    <div class="detail-hero">
+        <div class="detail-hero-info">
+            <span class="poke-eyebrow">FICHA DE POKÉMON</span>
+            <span class="detail-number">N.º @Model.Id.ToString("D4")</span>
+
+            <h1 class="text-capitalize">@Model.Nombre</h1>
+
+            <div class="detail-types">
+                @foreach (var tipo in Model.Tipos)
+                {
+                    <partial name="_TipoBadge" model="tipo" />
+                }
+            </div>
+
+            <p class="detail-description">
+                Conoce sus características, habilidades y estadísticas
+                para descubrir todo su potencial.
+            </p>
+
+            <form asp-controller="Equipo"
+                  asp-action="Agregar"
+                  method="post"
+                  class="detail-add-form">
+
+                <input type="hidden" name="nombre" value="@Model.Nombre" />
+
+                <input type="text"
+                       name="apodo"
+                       class="form-control"
+                       placeholder="Asigna un apodo (opcional)"
+                       maxlength="20" />
+
+                <button type="submit" class="btn detail-add-button">
+                    + Agregar a mi equipo
+                </button>
+            </form>
+        </div>
+
+        <div class="detail-hero-image">
+            <div class="detail-image-glow"></div>
+            <img src="@Model.Imagen" alt="@Model.Nombre" />
+        </div>
+    </div>
+
+    <section class="detail-info-grid">
+        <div class="detail-info-card">
+            <span>ALTURA</span>
+            <strong>@Model.AlturaMetros m</strong>
+        </div>
+
+        <div class="detail-info-card">
+            <span>PESO</span>
+            <strong>@Model.PesoKg kg</strong>
+        </div>
+
+        <div class="detail-info-card">
+            <span>EXPERIENCIA BASE</span>
+            <strong>@Model.ExperienciaBase</strong>
+        </div>
+
+        <div class="detail-info-card">
+            <span>ESTADÍSTICAS TOTALES</span>
+            <strong>@Model.TotalEstadisticas</strong>
+        </div>
+    </section>
+
+    <div class="detail-content-grid">
+
+        <section class="detail-panel">
+            <div class="detail-panel-heading">
+                <div>
+                    <span class="poke-eyebrow">RENDIMIENTO</span>
+                    <h2>Estadísticas base</h2>
+                </div>
+                <span class="detail-panel-icon">▥</span>
+            </div>
+
+            @for (int i = 0; i < Model.Estadisticas.Count; i++)
+            {
+                var stat = Model.Estadisticas[i];
+                var porcentaje = Math.Min(100, stat.Valor * 100 / 180);
+
+                var color = stat.Valor >= 120
+                    ? "excellent"
+                    : stat.Valor >= 90
+                        ? "high"
+                        : stat.Valor >= 60
+                            ? "medium"
+                            : "low";
+
+                <div class="detail-stat">
+                    <div class="detail-stat-heading">
+                        <span>@TraducirEstadistica(stat.Nombre)</span>
+                        <div>
+                            <strong>@stat.Valor</strong>
+                            <small>@EvaluarEstadistica(stat.Valor)</small>
+                        </div>
+                    </div>
+
+                    <div class="detail-stat-track">
+                        <div class="detail-stat-fill @color"
+                             style="width:@porcentaje%">
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="detail-total">
+                <span>Estadísticas totales</span>
+                <strong>@Model.TotalEstadisticas</strong>
+            </div>
+        </section>
+
+        <section class="detail-panel detail-abilities">
+            <div class="detail-panel-heading">
+                <div>
+                    <span class="poke-eyebrow">CARACTERÍSTICAS</span>
+                    <h2>Habilidades</h2>
+                </div>
+                <span class="detail-panel-icon">✦</span>
+            </div>
+
+            @if (Model.Habilidades.Count > 0)
+            {
+                <div class="ability-list">
+                    @foreach (var habilidad in Model.Habilidades)
+                    {
+                        bool oculta = habilidad.EndsWith("(oculta)");
+
+                        <div class="ability-item @(oculta ? "hidden-ability" : "")">
+                            <span class="ability-icon">✧</span>
+                            <div>
+                                <strong class="text-capitalize">@habilidad</strong>
+
+                                @if (oculta)
+                                {
+                                    <small>Habilidad oculta</small>
+                                }
+                                else
+                                {
+                                    <small>Habilidad disponible</small>
+                                }
+                            </div>
+
+                            @if (oculta)
+                            {
+                                <span class="ability-tag">OCULTA</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No hay habilidades disponibles.</p>
+            }
+        </section>
+
+    </div>
+
+</section>

@@ -1,0 +1,96 @@
+@model PaginaPokemon
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<section class="poke-hero mb-4">
+    <div class="poke-hero-content">
+        <span class="poke-eyebrow">TU AVENTURA COMIENZA AQUÍ</span>
+        <h1>Bienvenido a <span>PokéZone</span></h1>
+        <p>
+            Explora el mundo Pokémon, descubre nuevas especies
+            y construye el equipo perfecto para tu aventura.
+        </p>
+        <a asp-controller="Pokedex" asp-action="Buscar" class="btn btn-poke-hero">
+            Explorar Pokémon <span>→</span>
+        </a>
+    </div>
+
+    <div class="poke-hero-symbol">◓</div>
+</section>
+
+<section class="poke-stats mb-5">
+    <div class="poke-stat">
+        <span class="poke-stat-icon">◈</span>
+        <div>
+            <span class="poke-stat-label">Pokémon registrados</span>
+            <strong>@Model.Total</strong>
+        </div>
+    </div>
+
+    <div class="poke-stat">
+        <span class="poke-stat-icon">▦</span>
+        <div>
+            <span class="poke-stat-label">Página actual</span>
+            <strong>@Model.Pagina <small>/ @Model.TotalPaginas</small></strong>
+        </div>
+    </div>
+
+    <div class="poke-stat">
+        <span class="poke-stat-icon">✦</span>
+        <div>
+            <span class="poke-stat-label">Colección</span>
+            <strong>Pokédex</strong>
+        </div>
+    </div>
+</section>
+
+<section class="poke-collection">
+    <div class="poke-section-heading">
+        <div>
+            <span class="poke-eyebrow">DESCUBRE Y COLECCIONA</span>
+            <h2>Explora los Pokémon</h2>
+            <p>Encuentra tu próximo compañero de aventura.</p>
+        </div>
+
+        <span class="poke-page-label">
+            Página @Model.Pagina de @Model.TotalPaginas
+        </span>
+    </div>
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
+        @foreach (var pokemon in Model.Resultados)
+        {
+            <partial name="_PokemonCard" model="pokemon" />
+        }
+    </div>
+</section>
+
+<nav class="poke-pagination d-flex justify-content-between align-items-center my-5">
+    @if (Model.Pagina > 1)
+    {
+        <a class="btn btn-poke-secondary"
+           asp-action="Index"
+           asp-route-pagina="@(Model.Pagina - 1)">
+            ← Anterior
+        </a>
+    }
+    else
+    {
+        <span></span>
+    }
+
+    <span class="poke-pagination-info">
+        @Model.Pagina / @Model.TotalPaginas
+    </span>
+
+    @if (Model.Pagina < Model.TotalPaginas)
+    {
+        <a class="btn btn-poke-primary"
+           asp-action="Index"
+           asp-route-pagina="@(Model.Pagina + 1)">
+            Siguiente →
+        </a>
+    }
+</nav>

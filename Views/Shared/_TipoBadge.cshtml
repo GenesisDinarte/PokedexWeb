@@ -1,0 +1,34 @@
+@* Vista parcial: recibe el nombre de un tipo en inglés ("fire") y lo pinta en español *@
+@model string
+
+@switch (Model)
+{
+    case "fire":
+        <span class="tipo tipo-fire">Fuego</span>
+        break;
+    case "water":
+        <span class="tipo tipo-water">Agua</span>
+        break;
+    case "grass":
+        <span class="tipo tipo-grass">Planta</span>
+        break;
+    case "electric":
+        <span class="tipo tipo-electric">Eléctrico</span>
+        break;
+    case "psychic":
+        <span class="tipo tipo-psychic">Psíquico</span>
+        break;
+    case "dragon":
+        <span class="tipo tipo-dragon">Dragón</span>
+        break;
+    case "poison":
+        <span class="tipo tipo-poison">Veneno</span>
+        break;
+    case "flying":
+        <span class="tipo tipo-flying">Volador</span>
+        break;
+    default:
+        @* Cualquier otro tipo se muestra con su nombre original *@
+        <span class="tipo">@Model</span>
+        break;
+}

@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PokéZone</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PokedexWeb.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-controller="Pokedex" asp-action="Index">◓ PokéZone</a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-expanded="false" aria-label="Menú">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Pokedex" asp-action="Index">Pokédex</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Pokedex" asp-action="Buscar">Buscar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Pokedex" asp-action="Tipo">Por tipo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Pokedex" asp-action="Comparar">Comparar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold" asp-controller="Equipo" asp-action="Index">Mi equipo</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="alert alert-@TempData["TipoMensaje"] alert-dismissible fade show">
+                    @TempData["Mensaje"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - SC-701 · Datos de
+            <a href="https://pokeapi.co" target="_blank">PokeAPI</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
